@@ -7,12 +7,10 @@
 #include <fstream>
 #include <vector>
 
-class ELFHeader
-{
-  public:
+class ELFHeader {
+public:
     // Raw value accessors
-    ELFHeader(std::ifstream &fd, bool is_32bit)
-    {
+    ELFHeader(std::ifstream &fd, bool is_32bit) {
         this->fd = &fd;
         this->is_32bit = is_32bit;
         ReadHeader();
@@ -44,11 +42,10 @@ class ELFHeader
 
     bool is_32bit;
 
-  private:
+private:
     std::vector<unsigned char> ident;
     std::ifstream *fd;
-    union
-    {
+    union {
         Elf32_Ehdr ehdr32;
         Elf64_Ehdr ehdr64;
     };

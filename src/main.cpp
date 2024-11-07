@@ -1,5 +1,6 @@
-#include <fstream>
 #include <getopt.h>
+
+#include <fstream>
 #include <iostream>
 #include <map>
 
@@ -8,14 +9,12 @@
 void Usage();
 bool Dispatcher(std::map<elf_structs, bool> flags, ELFParser *parser);
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
     int c;
     std::map<elf_structs, bool> flags;
     std::string file_path;
 
-    while (1)
-    {
+    while (1) {
         int option_index = 0;
         static struct option long_options[] = {
             {"help", no_argument, 0, 'H'},
@@ -25,34 +24,29 @@ int main(int argc, char **argv)
             {0, 0, 0, 0}};
 
         c = getopt_long(argc, argv, "ahsH", long_options, &option_index);
-        if (c == -1)
-            break;
+        if (c == -1) break;
 
-        switch (c)
-        {
-        case 'h':
-            flags[EHEADER] = true;
-            break;
-        case 's':
-            flags[PHEADER] = true;
-            break;
-        case 'a':
-            flags[EHEADER] = true;
-            flags[PHEADER] = true;
-            break;
-        case 'H':
-        default:
-            Usage();
-            exit(EXIT_FAILURE);
+        switch (c) {
+            case 'h':
+                flags[EHEADER] = true;
+                break;
+            case 's':
+                flags[PHEADER] = true;
+                break;
+            case 'a':
+                flags[EHEADER] = true;
+                flags[PHEADER] = true;
+                break;
+            case 'H':
+            default:
+                Usage();
+                exit(EXIT_FAILURE);
         }
     }
 
-    if (optind < argc)
-    {
+    if (optind < argc) {
         file_path = argv[optind];
-    }
-    else
-    {
+    } else {
         std::cerr << "Error: No file path provided." << std::endl;
         Usage();
         exit(EXIT_FAILURE);
@@ -60,8 +54,7 @@ int main(int argc, char **argv)
 
     ELFParser parser(file_path);
 
-    if (!parser.IsValid())
-    {
+    if (!parser.IsValid()) {
         std::cerr << "Error: Not an ELF file - it has the wrong magic bytes at "
                      "the start !"
                   << std::endl;
@@ -72,8 +65,7 @@ int main(int argc, char **argv)
     return 0;
 }
 
-void Usage()
-{
+void Usage() {
     std::cout << "ELF Parser\n"
               << "----------------------\n"
               << "ELFParser [OPTIONS] [FILE_PATH]\n"
@@ -85,23 +77,18 @@ void Usage()
               << std::endl;
 }
 
-bool Dispatcher(std::map<elf_structs, bool> flags, ELFParser *parser)
-{
-    if (!parser)
-    {
+bool Dispatcher(std::map<elf_structs, bool> flags, ELFParser *parser) {
+    if (!parser) {
         std::cerr << "Invalid parser instance." << std::endl;
         return false;
     }
 
-    for (auto it = flags.begin(); it != flags.end(); it++)
-    {
-        if (it->first == EHEADER && it->second == true)
-        {
+    for (auto it = flags.begin(); it != flags.end(); it++) {
+        if (it->first == EHEADER && it->second == true) {
             // Print each field of the ELF header
             std::cout << "ELF Header: " << std::endl;
             std::cout << "  Magic: ";
-            for (auto value : parser->elf_header->GetIdent())
-            {
+            for (auto value : parser->elf_header->GetIdent()) {
                 std::cout << std::hex << std::setw(2) << std::setfill('0')
                           << static_cast<unsigned int>(value) << " ";
             }
@@ -154,12 +141,9 @@ bool Dispatcher(std::map<elf_structs, bool> flags, ELFParser *parser)
 
             std::cout << std::endl;
             it->second = false;
-        }
-        else if (it->first == PHEADER && it->second == true)
-        {
+        } else if (it->first == PHEADER && it->second == true) {
             std::cout << "Program Header Information:" << std::endl;
-            for (size_t i = 0; i < parser->program_headers.size(); ++i)
-            {
+            for (size_t i = 0; i < parser->program_headers.size(); ++i) {
                 auto &header = parser->program_headers[i];
                 std::cout << "  Program Header 0x" << std::hex << i + 1 << ":"
                           << std::endl;

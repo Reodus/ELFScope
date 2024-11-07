@@ -5,12 +5,10 @@
 
 #include <fstream>
 
-class ProgramHeader
-{
-  public:
+class ProgramHeader {
+public:
     ProgramHeader(std::ifstream &fd, bool is_32bit)
-        : is_32bit(is_32bit), fd(&fd)
-    {
+        : is_32bit(is_32bit), fd(&fd) {
         ReadProgramHeader();
     }
 
@@ -26,12 +24,11 @@ class ProgramHeader
     // Human-readable description of segment type
     std::string PrintSegmentType(uint32_t type);
 
-  private:
+private:
     bool is_32bit;
     std::ifstream *fd;
 
-    union
-    {
+    union {
         Elf32_Phdr phdr32;
         Elf64_Phdr phdr64;
     };

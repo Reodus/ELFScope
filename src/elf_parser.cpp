@@ -1,12 +1,9 @@
 #include "elf_parser.h"
 
-ELFParser::ELFParser(std::string &file_path) : valid(false)
-{
-    try
-    {
+ELFParser::ELFParser(std::string &file_path) : valid(false) {
+    try {
         fd.open(file_path, std::ios::binary);
-        if (!fd)
-        {
+        if (!fd) {
             throw std::runtime_error("Failed to open file: " + file_path);
         }
 
@@ -21,8 +18,7 @@ ELFParser::ELFParser(std::string &file_path) : valid(false)
 
         fd.seekg(ph_offset, std::ios::beg);
 
-        for (uint16_t i = 0; i < ph_entry_count; ++i)
-        {
+        for (uint16_t i = 0; i < ph_entry_count; ++i) {
             program_headers.push_back(
                 std::make_unique<ProgramHeader>(fd, is_32bit));
 
@@ -32,15 +28,12 @@ ELFParser::ELFParser(std::string &file_path) : valid(false)
                                                      : sizeof(Elf64_Phdr)),
                      std::ios::beg);
         }
-    }
-    catch (const std::exception &e)
-    {
+    } catch (const std::exception &e) {
         std::cerr << "Error parsing ELF file: " << e.what() << std::endl;
     }
 }
 
-void ELFParser::IsFileValid()
-{
+void ELFParser::IsFileValid() {
     char elf_class_value[1];
     char magic_value[4];
 
@@ -48,8 +41,7 @@ void ELFParser::IsFileValid()
 
     fd.read(magic_value, 4);
     if (magic_value[EI_MAG0] != ELFMAG0 || magic_value[EI_MAG1] != ELFMAG1 ||
-        magic_value[EI_MAG2] != ELFMAG2 || magic_value[EI_MAG3] != ELFMAG3)
-    {
+        magic_value[EI_MAG2] != ELFMAG2 || magic_value[EI_MAG3] != ELFMAG3) {
         valid = false;
         return;
     }

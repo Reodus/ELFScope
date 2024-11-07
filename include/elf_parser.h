@@ -15,22 +15,17 @@
 #include "eheader_parser.h"
 #include "pheader_parser.h"
 
-enum elf_structs
-{
-    EHEADER,
-    PHEADER
-};
+enum elf_structs { EHEADER, PHEADER };
 
-class ELFParser
-{
-  public:
+class ELFParser {
+public:
     ELFParser(std::string &file_path);
     bool IsValid();
 
     std::unique_ptr<ELFHeader> elf_header;
     std::vector<std::unique_ptr<ProgramHeader>> program_headers;
 
-  private:
+private:
     std::ifstream fd;
     bool valid;
     bool is_32bit;
