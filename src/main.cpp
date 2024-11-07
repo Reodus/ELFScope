@@ -6,8 +6,8 @@
 
 #include "elf_parser.h"
 
-void usage();
-bool dispatcher(std::map<elf_structs, bool> flags, ELFParser *parser);
+void Usage();
+bool Dispatcher(std::map<elf_structs, bool> flags, ELFParser *parser);
 
 int main(int argc, char **argv)
 {
@@ -43,7 +43,7 @@ int main(int argc, char **argv)
             break;
         case 'H':
         default:
-            usage();
+            Usage();
             exit(EXIT_FAILURE);
         }
     }
@@ -55,7 +55,7 @@ int main(int argc, char **argv)
     else
     {
         std::cerr << "Error: No file path provided." << std::endl;
-        usage();
+        Usage();
         exit(EXIT_FAILURE);
     }
 
@@ -69,11 +69,11 @@ int main(int argc, char **argv)
         return -1;
     }
 
-    dispatcher(flags, &parser);
+    Dispatcher(flags, &parser);
     return 0;
 }
 
-void usage()
+void Usage()
 {
     std::cout << "ELF Parser\n"
               << "----------------------\n"
@@ -86,7 +86,7 @@ void usage()
               << std::endl;
 }
 
-bool dispatcher(std::map<elf_structs, bool> flags, ELFParser *parser)
+bool Dispatcher(std::map<elf_structs, bool> flags, ELFParser *parser)
 {
     if (!parser)
     {
