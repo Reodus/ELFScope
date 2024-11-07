@@ -1,7 +1,11 @@
 # README
-To build this project, change directory to build and enter this command:
+
+## Build
+To build this project, enter these commands:
 
 ```bash
+mkdir build
+cd build
 cmake ..
 make
 ```
