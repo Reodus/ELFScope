@@ -1,0 +1,57 @@
+name: CMake Build and Test
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        build_type: [Release]
+        cpp_compiler: [g++]
+
+    steps:
+    # Check out the code from the repository
+    - uses: actions/checkout@v4
+
+    # Install CMake
+    - name: Install CMake
+      run: sudo apt-get install -y cmake
+
+    # Set reusable strings
+    - name: Set reusable strings
+      id: vars
+      shell: bash
+      run: |
+        echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+
+    # Configure CMake
+    - name: Configure CMake
+      run: |
+        cmake -B ${{ steps.vars.outputs.build-output-dir }} \
+              -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }} \
+              -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+              -S ${{ github.workspace }}
+
+    # Build the project
+    - name: Build
+      run: cmake --build ${{ steps.vars.outputs.build-output-dir }} --config ${{ matrix.build_type }}
+
+    # Run tests if they are defined in CMake
+    - name: Run Tests
+      working-directory: ${{ steps.vars.outputs.build-output-dir }}
+      run: ctest --output-on-failure --build-config ${{ matrix.build_type }}
+
+    # Upload build artifacts (binaries and logs)
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: ELFScope-${{ matrix.build_type }}-build
+        path: ${{ steps.vars.outputs.build-output-dir }}
+
