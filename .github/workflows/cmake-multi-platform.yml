@@ -88,6 +88,7 @@ jobs:
         release_name: "Release ${{ github.ref_name }}"
         draft: false
         prerelease: false
+        token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Upload Release Package
       uses: actions/upload-release-asset@v1
