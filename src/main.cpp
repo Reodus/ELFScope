@@ -21,9 +21,10 @@ int main(int argc, char **argv) {
             {"all", no_argument, 0, 'a'},
             {"header", no_argument, 0, 'h'},
             {"segments", no_argument, 0, 's'},
+            {"sections", no_argument, 0, 'S'},
             {0, 0, 0, 0}};
 
-        c = getopt_long(argc, argv, "ahsH", long_options, &option_index);
+        c = getopt_long(argc, argv, "ahsSH", long_options, &option_index);
         if (c == -1) break;
 
         switch (c) {
@@ -33,9 +34,13 @@ int main(int argc, char **argv) {
             case 's':
                 flags[PHEADER] = true;
                 break;
+            case 'S':
+                flags[SHEADER] = true;
+                break;
             case 'a':
                 flags[EHEADER] = true;
                 flags[PHEADER] = true;
+                flags[SHEADER] = true;
                 break;
             case 'H':
             default:
@@ -74,6 +79,7 @@ void Usage() {
               << "-a --all          Equivalent to: -h -s\n"
               << "-h --header		shows executable header\n"
               << "-s --segments     shows program header segments\n"
+              << "-S --sections     shows section header table\n"
               << std::endl;
 }
 
@@ -165,8 +171,39 @@ bool Dispatcher(std::map<elf_structs, bool> flags, ELFParser *parser) {
                 std::cout << "    Alignment: 0x" << std::hex
                           << header->GetAlignment() << std::endl;
                 std::cout << std::endl;
-                it->second = false;
             }
+            it->second = false;
+        } else if (it->first == SHEADER && it->second == true) {
+            std::cout << "Section Header Table: " << std::endl;
+            for (size_t i = 0; i < parser->section_headers.size(); ++i) {
+                auto &header = parser->section_headers[i];
+
+                std::cout << "  Name: "
+                          << parser->GetStringFromStringTable(header->GetName())
+                          << std::endl;
+                std::cout << "  Type: " << std::hex
+                          << header->PrintSectionType(header->GetType())
+                          << std::endl;
+                std::cout << "  Address: 0x" << std::hex
+                          << header->GetVirtualAddress() << std::endl;
+                std::cout << "  Offset: 0x" << std::hex << header->GetOffset()
+                          << std::endl;
+                std::cout << "  Size: " << std::dec << header->GetSize()
+                          << std::endl;
+                std::cout << "  Entry size: " << header->GetEntSize()
+                          << std::endl;
+                std::cout << "  Flag: 0x" << std::hex << header->GetFlags()
+                          << std::endl;
+                std::cout << "  Link: 0x" << std::hex << header->GetLink()
+                          << std::endl;
+                std::cout << "  Info: " << std::dec << header->GetInfo()
+                          << std::endl;
+                std::cout << "  Address Align: " << header->GetAddrAlign()
+                          << std::endl;
+
+                std::cout << std::endl;
+            }
+            it->second = false;
         }
     }
 

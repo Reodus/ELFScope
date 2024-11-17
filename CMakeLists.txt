@@ -11,6 +11,7 @@ set(INC_FILES
     "include/elf_parser.h"
     "include/eheader_parser.h"
     "include/pheader_parser.h"
+    "include/sheader_parser.h"
 )
 
 set(SRC_FILES
@@ -18,6 +19,7 @@ set(SRC_FILES
     "src/elf_parser.cpp"
     "src/eheader_parser.cpp"
     "src/pheader_parser.cpp"
+    "src/sheader_parser.cpp"
     
 )
 
