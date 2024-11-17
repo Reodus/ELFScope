@@ -75,9 +75,9 @@ void Usage() {
               << "----------------------\n"
               << "ELFParser [OPTIONS] [FILE_PATH]\n"
               << "Usage:\n"
-              << "-H --help			shows this message\n"
-              << "-a --all          Equivalent to: -h -s\n"
-              << "-h --header		shows executable header\n"
+              << "-H --help         shows this message\n"
+              << "-a --all          Equivalent to: -h -s -S\n"
+              << "-h --header       shows executable header\n"
               << "-s --segments     shows program header segments\n"
               << "-S --sections     shows section header table\n"
               << std::endl;
